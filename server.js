@@ -6,7 +6,9 @@ const morgan = require("morgan");
 
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config/config.env" });
-const { NODE_ENV, PORT, MONGO_URL } = process.env;
+dotenv.config({ path: "./config/devmode.env" });
+
+const { NODE_ENV, PORT } = process.env;
 const connectDB = require("./config/db");
 
 const todosRoutes = require("./routes/list");
