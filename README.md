@@ -1,3 +1,3 @@
 # Cherry-Estates
-Deployed to Heroku
+Deployed on Heroku
 https://cherry-estates.herokuapp.com/
