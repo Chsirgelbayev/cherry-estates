@@ -3,43 +3,47 @@ const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
 const colors = require("colors");
 const morgan = require("morgan");
-
 const dotenv = require("dotenv");
+
+const connectDB = require("./config/db");
+const todosRoutes = require("./routes/list");
+const { NODE_ENV, PORT } = process.env;
+
 dotenv.config({ path: "./config/config.env" });
 dotenv.config({ path: "./config/devmode.env" });
 
-const { NODE_ENV, PORT } = process.env;
-const connectDB = require("./config/db");
+const server = () => {
+    const app = express();
 
-const todosRoutes = require("./routes/list");
+    const hbs = exphbs.create({
+        defaultLayout: "main",
+        extname: "hbs",
+    });
 
-const app = express();
+    connectDB();
 
-const hbs = exphbs.create({
-  defaultLayout: "main",
-  extname: "hbs",
-});
+    if (NODE_ENV === "development") {
+        app.use(morgan("dev"));
+    }
 
-connectDB();
+    app.engine("hbs", hbs.engine);
+    app.set("view engine", "hbs");
+    app.set("views", "views");
+    app.use(express.static("public"));
 
-if (NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+    app.use(todosRoutes);
 
-app.engine("hbs", hbs.engine);
-app.set("view engine", "hbs");
-app.set("views", "views");
-app.use(express.static("public"));
+    app.listen(PORT || 3000, () => {
+        console.log(
+            `Server is running on ${NODE_ENV} mode and ${PORT} port`.black
+                .bgCyan
+        );
+    });
 
-app.use(todosRoutes);
+    process.on("unhandledRejection", (e) => {
+        console.log(`Error: ${e.message}`.red.underline.bold);
+        server.close(() => process.exit(1));
+    });
+};
 
-const server = app.listen(PORT || 3000, () => {
-  console.log(
-    `Server is running on ${NODE_ENV} mode and ${PORT} port`.black.bgYellow
-  );
-});
-
-process.on("unhandledRejection", (e) => {
-  console.log(`Error: ${e.message}`.red.underline.bold);
-  server.close(() => process.exit(1));
-});
+server()
