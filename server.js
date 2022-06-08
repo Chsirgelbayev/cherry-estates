@@ -19,13 +19,10 @@ const hbs = exphbs.create({
 
 connectDB();
 
-if (NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-}
-
 app.engine('hbs', hbs.engine)
     .set('view engine', 'hbs')
     .set('views', 'views')
+    .use(morgan('dev'))
     .use(express.static('public'))
     .use(todosRoutes);
 
