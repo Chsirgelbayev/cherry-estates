@@ -19,7 +19,8 @@ const hbs = exphbs.create({
 
 connectDB();
 
-app.engine('hbs', hbs.engine)
+app
+    .engine('hbs', hbs.engine)
     .set('view engine', 'hbs')
     .set('views', 'views')
     .use(morgan('dev'))
