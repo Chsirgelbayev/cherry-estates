@@ -2,11 +2,15 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     const { MONGO_URL } = process.env;
-    const conn = await mongoose.connect(MONGO_URL, {
-        useNewUrlParser: true,
-    });
-
-    console.log(`MongoDB Connected: ${conn.connection.host}`.black.bgGreen);
+    await mongoose
+        .connect(MONGO_URL, {
+            useNewUrlParser: true
+        })
+        .then(res => {
+            console.log(
+                `MongoDB Connected: ${res.connection.host}`.black.bgGreen
+            );
+        });
 };
 
 module.exports = connectDB;
